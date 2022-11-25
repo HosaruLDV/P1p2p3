@@ -8,7 +8,11 @@ from handlers.hanlders.products import get_product_list
                                  ({"action": 2, "filter": {"price": ['>=100', 77], "category": None}},
                                   {'code': 400, 'data': ''}),
 
-                                 ([{"price": ['>=100']}, {"category": None}], {'code': 500, 'data': ''})
+                                 ([{"price": ['>=100']}, {"category": None}],
+                                  {'code': 500, 'data': ''})
                                  ])
 def test_get_product_list(a, b):
     assert get_product_list(a) == b
+
+
+
