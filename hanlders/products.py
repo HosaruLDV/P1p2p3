@@ -1,3 +1,7 @@
+def get_single_product(data):
+    pass
+
+
 def get_product_list(data):
     import json
     code = 200
@@ -8,8 +12,6 @@ def get_product_list(data):
             json_file = json.loads(file.read())
             price = data['filter']['price'][0]
             category = data['filter']['category']
-
-
 
             # Code 400
             good = False
@@ -33,6 +35,3 @@ def get_product_list(data):
         code = 500
     finally:
         return {'code': code, 'data': products}
-
-
-print(get_product_list([{"price": ['>=100']}, {"category": None}]))
