@@ -19,11 +19,12 @@ def delete_products(pr_id, num):
 
 
 def put_product_to_cart(data):
+    print(data)
     catalog_info = get_catalog()
     chosen_product = None
     for cat in catalog_info:
         for product in cat['products']:
-            if product['id'] == data['filter']['id']:
+            if product['id'] == data['data']['id']:
                 chosen_product = product
     if not chosen_product:
         return {
@@ -36,7 +37,7 @@ def put_product_to_cart(data):
         product_name = chosen_product['name']
         product_price = str(chosen_product['price']) + 'руб./' + chosen_product['unit']
         product_unit = chosen_product['unit']
-        product_num = data['filter']['count']
+        product_num = data['data']['count']
 
         if chosen_product['balance'] < product_num:
             return {
@@ -58,9 +59,16 @@ def put_product_to_cart(data):
             with open('data/cart.json', 'r', encoding='utf-8') as file:
                 try:
                     cart_info = json.load(file)
+                    if_add_item = True
                     for product_in_cart in cart_info:
+                        if product_in_cart['product_id'] == to_add[0]['product_id']:
+                            product_in_cart['product_num'] += to_add[0]['product_num']
+                            if_add_item = False
                         cart_list.append(product_in_cart)
-                    cart_list.append(to_add[0])
+
+                    if if_add_item:
+                        cart_list.append(to_add[0])
+
                     with open('data/cart.json', 'w', encoding='utf-8') as file:
                         json.dump(cart_list, file, ensure_ascii=False)
                 except ValueError:
