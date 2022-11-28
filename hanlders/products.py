@@ -38,7 +38,7 @@ def get_product_list(data):
 
 
 
-<<<<<<< HEAD
+
 def get_single_product(data):
     with open("../data/catalog.json", encoding='utf-8') as catalog:
         catalog_data = json.load(catalog)
@@ -55,5 +55,4 @@ def get_single_product(data):
     return {
         "code": code,
         "message": message}
-=======
->>>>>>> gtl
+
