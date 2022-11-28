@@ -1,7 +1,3 @@
-def get_single_product(data):
-    pass
-
-
 def get_product_list(data):
     import json
     code = 200
@@ -16,13 +12,13 @@ def get_product_list(data):
             # Code 400
             good = False
             match data:
-                case {'action': _, 'filter': {'price': [_], 'category': cat}}:
-                    if cat in [None, int]:
+                case {'action': _, 'filter': {'price': [_], 'category': [*ec]}}:
+                    print(ec)
+                    if all([T in [None, int] for T in ec]):
                         good = True
             if not good:
                 code = 400
                 return {'code': code, 'data': products}
-
             # Main
             for j in json_file:
                 for prd in j['products']:
@@ -35,3 +31,8 @@ def get_product_list(data):
         code = 500
     finally:
         return {'code': code, 'data': products}
+
+
+
+
+
