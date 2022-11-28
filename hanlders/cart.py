@@ -1,10 +1,33 @@
 import json
 
 
+## Добавил путь к файлу корзины
+cart = 'data/cart.json'
+
 def get_catalog():
     with open('data/catalog.json', 'r', encoding='utf-8') as file:
         catalog = json.load(file)
     return catalog
+
+def get_cart(*args, **qwargs):
+    ## Достаем корзину из файла
+    try:
+        with open(cart, 'r', encoding='utf-8') as file:
+            cart_re = json.load(file)
+    ## Файл не нашли - возвращаем пустой список
+    except:
+        cart_re = []
+    return cart_re
+
+def is_cart_exist(*args, **qwargs):
+    try:
+        with open(cart, 'r', encoding='utf-8') as file:
+            cart_re = json.load(file)
+    ## Файл не нашли (или криво читается) - создаем новый файл корзины
+    except:
+        with open(cart, 'w', encoding='utf-8') as file:
+            json.dump([], file)
+
 
 
 def delete_products(pr_id, num):
@@ -17,8 +40,11 @@ def delete_products(pr_id, num):
     with open('data/catalog.json', 'w', encoding='utf-8') as file:
         json.dump(catalog_info, file, ensure_ascii=False)
 
-
 def put_product_to_cart(data):
+
+    ## В коде не увидел проверку наличия корзины. Добавил.
+    is_cart_exist()
+
     catalog_info = get_catalog()
     chosen_product = None
     for cat in catalog_info:
@@ -55,16 +81,16 @@ def put_product_to_cart(data):
                 'product_unit': product_unit
             }]
             cart_list = []
-            with open('data/cart.json', 'r', encoding='utf-8') as file:
+            with open(cart, 'r', encoding='utf-8') as file:
                 try:
                     cart_info = json.load(file)
                     for product_in_cart in cart_info:
                         cart_list.append(product_in_cart)
                     cart_list.append(to_add[0])
-                    with open('data/cart.json', 'w', encoding='utf-8') as file:
+                    with open(cart, 'w', encoding='utf-8') as file:
                         json.dump(cart_list, file, ensure_ascii=False)
                 except ValueError:
-                    with open('data/cart.json', 'a', encoding='utf-8') as file:
+                    with open(cart, 'a', encoding='utf-8') as file:
                         json.dump(to_add, file, ensure_ascii=False)
 
             return {
@@ -72,13 +98,19 @@ def put_product_to_cart(data):
                 "message": f"Товар {product_name} в количестве {product_num} {product_unit} добавлен в корзину успешно"
             }
 
+def get_cart(*args, **qwargs):
+    cart_read = get_cart()
+    message_re = {
+        "code": 200,
+        "message": []
+    }
+    if not cart_read:
+        message_re["message"] = "Корзина пуста\nВоспользуйтесь поиском, чтобы найти всё что нужно."
+    else:
+        j = 1
+        for i in cart_read:
+            message_re["message"].append(str(j) + ". " + i["product_name"] + " (" + i["product_price"] + ") " + "добавлено " + str(i["product_num"] + " " + i["product_unit"])                                                                                                                             ]))
+            j += 1
+        message_re["message"].split("\n")
 
-def get_cart(data):
-    print(
-        '1. — Света, а ты Деду Морозу письмо написала? — нет. \n'
-        '   — почему? — он мужчина. пусть первый пишет… 2. '
-        'Муж возвращается домой утром, открывает дверь и сразу без '
-        'лишних слов получает сковородой в лоб. Приходит в себя, жена '
-        'говорит: — Вася, ты уж извини! Я совсем забыла, что ты был в '
-        'ночную смену… 3. […]')
-    pass
+    return message_re
